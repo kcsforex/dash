@@ -6,7 +6,7 @@ api_key = 'AIzaSyBzSaapBAb9sfTih5iHefzDeYOtKB8_G7s'
 
 router = APIRouter()
 
-@router.get("/channels")
+@router.get("/channel/{handle}")
 def get_channel_stats_api(handle):
     youtube = build("youtube", "v3", developerKey=api_key)
 
