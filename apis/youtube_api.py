@@ -65,7 +65,3 @@ def get_channel_stats_api(handle):
         })
     
     return results
-
-# Run the script
-data = get_channel_stats_api("@Reakciok")
-print(data)
