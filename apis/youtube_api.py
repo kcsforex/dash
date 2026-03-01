@@ -1,8 +1,12 @@
 # 2026.03.01  18.00
 from googleapiclient.discovery import build
 import isodate
+from fastapi import APIRouter
 api_key = 'AIzaSyBzSaapBAb9sfTih5iHefzDeYOtKB8_G7s'
 
+router = APIRouter()
+
+@router.get("/channels")
 def get_channel_stats_api(handle):
     youtube = build("youtube", "v3", developerKey=api_key)
 
