@@ -1,4 +1,4 @@
-# 2026.03.02  16.00
+# 2026.03.02  18.00
 # https://heeki.medium.com/building-an-mcp-server-as-an-api-developer-cfc162d06a83
 import dash
 from dash import html, dcc
@@ -23,7 +23,8 @@ import apis.youtube_api as youtube
 import apis.youtube_api_mcp as youtube_mcp
 
 # ----- 3. FASTAPI WRAPPER -----
-server = FastAPI(title="Dash Main App")
+#server = FastAPI(title="Dash Main App")
+server = FastAPI(title="Dash Main App", lifespan=lambda app: youtube_mcp.mcp.session_manager.run() # Required for Streamable HTTP)
 
 # ----- 3.1 HEALTH ENDPOINT -----
 @server.get("/health")
