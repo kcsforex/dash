@@ -1,25 +1,23 @@
 # 2026.03.02 12:00
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
 from mcp.server.fastmcp import FastMCP
 from googleapiclient.discovery import build
 import isodate
 import uvicorn
 
-# 1. Initialize FastMCP
+# 1. Initialize APIRouter/FastMCP
+router = APIRouter() 
 mcp = FastMCP("YouTube Analytics")
 
 # Define your API key
 api_key = 'AIzaSyBzSaapBAb9sfTih5iHefzDeYOtKB8_G7s'
 
 # 2. Define the MCP Tool (The AI calls this)
+@router.get("/metrics/{handle}")
 @mcp.tool(name="get_youtube_metrics")
 def get_channel_stats(handle: str):
-    """
-    Fetches deep analytics for a YouTube channel by handle (e.g., @cryptofalka).
-    Returns subscriber count, top 5 latest videos with stats, and recent comments.
-    """
+    
     youtube = build("youtube", "v3", developerKey=api_key)
-
     ch_request = youtube.channels().list(part="id,snippet,statistics", forHandle=handle)
     ch_response = ch_request.execute()
 
@@ -29,20 +27,11 @@ def get_channel_stats(handle: str):
     channel_item = ch_response["items"][0]
     channel_id = channel_item["id"]
     
-    search_request = youtube.search().list(
-        part="id,snippet", 
-        channelId=channel_id, 
-        maxResults=5, 
-        order="date", 
-        type="video"
-    )
+    search_request = youtube.search().list(part="id,snippet", channelId=channel_id, maxResults=5, order="date", type="video")
     search_response = search_request.execute()
     video_ids = [item["id"]["videoId"] for item in search_response.get("items", [])]
     
-    stats_request = youtube.videos().list(
-        part="snippet,contentDetails,statistics", 
-        id=",".join(video_ids)
-    )
+    stats_request = youtube.videos().list(part="snippet,contentDetails,statistics", id=",".join(video_ids))
     stats_response = stats_request.execute()
 
     results = {
@@ -59,16 +48,11 @@ def get_channel_stats(handle: str):
         
         comments = []
         try:
-            comment_request = youtube.commentThreads().list(
-                part="snippet", videoId=video_id, maxResults=5, textFormat="plainText"
-            )
+            comment_request = youtube.commentThreads().list(part="snippet", videoId=video_id, maxResults=5, textFormat="plainText")
             comment_response = comment_request.execute()
             for c_item in comment_response.get("items", []):
                 c_snippet = c_item["snippet"]["topLevelComment"]["snippet"]
-                comments.append({
-                    "author": c_snippet["authorDisplayName"], 
-                    "text": c_snippet["textDisplay"] 
-                })
+                comments.append({"author": c_snippet["authorDisplayName"],  "text": c_snippet["textDisplay"]})
         except Exception:
             comments = [{"author": "System", "text": "Comments disabled"}]
 
