@@ -20,7 +20,7 @@ import apis.youtube_api as youtube
 
 # ----- 3. FASTAPI WRAPPER -----
 #server = FastAPI(title="Dash Main App")
-server = FastAPI(title="Dash Main App", lifespan=lambda app: youtube.session_manager.run(stateless_http=True))
+server = FastAPI(title="Dash Main App", lifespan=lambda app: youtube.mpc.session_manager.run(stateless_http=True))
 
 # ----- 3.1 HEALTH ENDPOINT -----
 @server.get("/health")
@@ -29,7 +29,9 @@ def health():
 
 # ----- 3.2. API ROUTERS -----
 #server.mount("/youtube", youtube.mcp.sse_app())
-server.mount("/youtube", youtube.mcp.streamable_http_app())
+#server.mount("/youtube", youtube.mcp.streamable_http_app())
+server.mount("/youtube", youtube.mcp.http_app(stateless_http=True) 
+)
 
 server.include_router(bybit.router,         prefix="/api/bybit",         tags=["Bybit"])
 server.include_router(kraken.router,        prefix="/api/kraken",        tags=["Kraken"])
