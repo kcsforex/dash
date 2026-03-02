@@ -33,18 +33,12 @@ def health():
 # 4. Mount the MCP SSE logic onto FastAPI
 # This creates the /sse and /messages endpoints n8n needs
 #app.mount("/mcp", mcp.sse_app())
-#server.mount("/youtube_mcp", youtube_mcp.mcp.streamable_http_app())
+
+youtube_mcp_asgi = youtube_mcp.mcp.streamable_http_app()
+server.mount("/youtube_mcp", youtube_mcp_asgi)
+
 #youtube_mcp_asgi = youtube_mcp.mcp.streamable_http_app()
 #server.mount("/youtube_mcp", youtube_mcp_asgi)
-
-youtube_mcp_app = youtube_mcp.mcp.http_app(path="/")
-@asynccontextmanager
-async def lifespan(app):
-    async with youtube_mcp_app.lifespan(app):
-        yield
-
-server = FastAPI(title="Dash Main App", lifespan=lifespan)
-server.mount("/youtube_mcp", youtube_mcp_app)
 #youtube_mcp.mcp.mount(server, path="/youtube_mcp/mcp")
 
 server.include_router(bybit.router,         prefix="/api/bybit",         tags=["Bybit"])
