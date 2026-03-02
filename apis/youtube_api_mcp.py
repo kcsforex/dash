@@ -1,27 +1,31 @@
 # 2026.03.02 15:00
-from fastapi import FastAPI, APIRouter
+from fastapi import APIRouter
 from mcp.server.fastmcp import FastMCP
 from mcp.server.transport_security import TransportSecuritySettings
 from googleapiclient.discovery import build
 import isodate
 
-# 1. Initialize APIRouter/FastMCP
-router = APIRouter() 
-#mcp = FastMCP("YouTube Analytics")
+# --- Initialize APIRouter & FastMCP ---
+router = APIRouter()
 
-# Initialize FastMCP with custom security settings
-mcp = FastMCP("YouTube Analytics", transport_security=TransportSecuritySettings(enable_dns_rebinding_protection=False))  
-# allowed_hosts=["dash.petrosofteu.cloud", "localhost", "127.0.0.1"]
-    
-# Define your API key
-api_key = 'AIzaSyBzSaapBAb9sfTih5iHefzDeYOtKB8_G7s'
+mcp = FastMCP("YouTube Analytics", transport_security=TransportSecuritySettings(enable_dns_rebinding_protection=False))
+api_key = "AIzaSyBzSaapBAb9sfTih5iHefzDeYOtKB8_G7s"
 
-# 2. Define the MCP Tool (The AI calls this)
-@router.get("/metrics/{handle}")
+# --- MCP Tool (called by AI / N8N) ---
 @mcp.tool(name="get_youtube_metrics")
-def get_channel_stats(handle: str):
-    
+async def get_channel_stats_mcp(handle: str):
+    """Get YouTube channel statistics and recent video data."""
+    return await fetch_youtube_data(handle)
+
+# --- REST Endpoint (called by Dash / browser) ---
+@router.get("/metrics/{handle}")
+async def get_channel_stats_api(handle: str):
+    return await fetch_youtube_data(handle)
+
+# --- Shared logic ---
+async def fetch_youtube_data(handle: str):
     youtube = build("youtube", "v3", developerKey=api_key)
+
     ch_request = youtube.channels().list(part="id,snippet,statistics", forHandle=handle)
     ch_response = ch_request.execute()
 
@@ -30,12 +34,17 @@ def get_channel_stats(handle: str):
 
     channel_item = ch_response["items"][0]
     channel_id = channel_item["id"]
-    
-    search_request = youtube.search().list(part="id,snippet", channelId=channel_id, maxResults=5, order="date", type="video")
+
+    search_request = youtube.search().list(
+        part="id,snippet", channelId=channel_id,
+        maxResults=5, order="date", type="video"
+    )
     search_response = search_request.execute()
     video_ids = [item["id"]["videoId"] for item in search_response.get("items", [])]
-    
-    stats_request = youtube.videos().list(part="snippet,contentDetails,statistics", id=",".join(video_ids))
+
+    stats_request = youtube.videos().list(
+        part="snippet,contentDetails,statistics", id=",".join(video_ids)
+    )
     stats_response = stats_request.execute()
 
     results = {
@@ -48,15 +57,20 @@ def get_channel_stats(handle: str):
         video_id = video["id"]
         stats = video["statistics"]
         snippet = video["snippet"]
-        details = video['contentDetails']
-        
+        details = video["contentDetails"]
+
         comments = []
         try:
-            comment_request = youtube.commentThreads().list(part="snippet", videoId=video_id, maxResults=5, textFormat="plainText")
+            comment_request = youtube.commentThreads().list(
+                part="snippet", videoId=video_id, maxResults=5, textFormat="plainText"
+            )
             comment_response = comment_request.execute()
             for c_item in comment_response.get("items", []):
                 c_snippet = c_item["snippet"]["topLevelComment"]["snippet"]
-                comments.append({"author": c_snippet["authorDisplayName"],  "text": c_snippet["textDisplay"]})
+                comments.append({
+                    "author": c_snippet["authorDisplayName"],
+                    "text": c_snippet["textDisplay"]
+                })
         except Exception:
             comments = [{"author": "System", "text": "Comments disabled"}]
 
@@ -68,5 +82,5 @@ def get_channel_stats(handle: str):
             "view_count": stats.get("viewCount"),
             "comments": comments
         })
-    
+
     return results
