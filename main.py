@@ -20,7 +20,7 @@ import apis.youtube_api as youtube
 
 # ----- 3. FASTAPI WRAPPER -----
 #server = FastAPI(title="Dash Main App")
-server = FastAPI(title="Dash Main App", lifespan=lambda app: youtube.session_manager.run(stateless_http=True))
+server = FastAPI(title="Dash Main App", lifespan=lambda app: youtube.mcp.session_manager.run(stateless_http=True))
 
 # ----- 3.1 HEALTH ENDPOINT -----
 @server.get("/health")
