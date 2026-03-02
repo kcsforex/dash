@@ -36,7 +36,8 @@ def health():
 # This creates the /sse and /messages endpoints n8n needs
 #app.mount("/mcp", mcp.sse_app())
 
-server.mount("/youtube_mcp", youtube_mcp.mcp.sse_app())
+#server.mount("/youtube_mcp", youtube_mcp.mcp.sse_app())
+server.mount("/youtube_mcp", youtube_mcp.mcp.streamable_http_app())
 
 #mcp = FastMCP("strava", stateless_http=True)
 #app = FastAPI(title="Strava",lifespan=lambda app: mcp.session_manager.run())
