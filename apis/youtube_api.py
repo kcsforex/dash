@@ -9,7 +9,7 @@ import isodate
 # --- Initialize APIRouter & FastMCP ---
 router = APIRouter()
 
-mcp = FastMCP("YouTube Analytics", stateless_http=True)
+mcp = FastMCP("YouTube Analytics")
 #mcp = FastMCP("YouTube Analytics", stateless_http=True, transport_security=TransportSecuritySettings(enable_dns_rebinding_protection=False))
 #mcp = FastMCP("YouTube Analytics") # transport_security=TransportSecuritySettings(enable_dns_rebinding_protection=False))
 api_key = "AIzaSyBzSaapBAb9sfTih5iHefzDeYOtKB8_G7s"
