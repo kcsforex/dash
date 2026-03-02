@@ -1,4 +1,4 @@
-# 2026.03.01  18.00
+# 2026.03.02  12.00
 import dash
 from dash import html, dcc
 import dash_bootstrap_components as dbc
@@ -16,6 +16,7 @@ import apis.bybit_signals_api as bybit_signals
 import apis.kraken_api as kraken
 import apis.lufthansa_api as lufthansa
 import apis.youtube_api as youtube
+import apis.youtube_api_mcp as youtube_mcp
 
 # ----- 3. FASTAPI WRAPPER -----
 server = FastAPI(title="Dash Main App")
@@ -26,6 +27,10 @@ def health():
     return {"status": "ok"}
 
 # ----- 3.2. API ROUTERS -----
+# 4. Mount the MCP SSE logic onto FastAPI
+# This creates the /sse and /messages endpoints n8n needs
+app.mount("/mcp", mcp.sse_app())
+
 server.include_router(bybit.router,         prefix="/api/bybit",         tags=["Bybit"])
 server.include_router(bybit_signals.router, prefix="/api/bybit_signals", tags=["Bybit Signals"])
 server.include_router(kraken.router,        prefix="/api/kraken",        tags=["Kraken"])
@@ -33,6 +38,7 @@ server.include_router(databricks.router,    prefix="/api/dbricks",       tags=["
 server.include_router(air_dataset.router,   prefix="/api/airdata",       tags=["Air Data"])
 server.include_router(lufthansa.router,     prefix="/api/lufthansa",     tags=["Lufthansa"])
 server.include_router(youtube.router,       prefix="/api/youtube",       tags=["Youtube"])
+server.include_router(youtube_mcp.router,   prefix="/api/youtube_mcp",   tags=["Youtube MCP"])
 
 # ----- 4. Mount Dash to FastAPI -----
 server.mount("/", WSGIMiddleware(app.server))
