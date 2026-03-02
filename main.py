@@ -5,9 +5,7 @@ from dash import html, dcc
 import dash_bootstrap_components as dbc
 from fastapi import FastAPI
 from fastapi.middleware.wsgi import WSGIMiddleware
-#from mcp.server.fastmcp import FastMCP
 from fastmcp import FastMCP
-from contextlib import asynccontextmanager
 
 # ----- 1. Initalize Dash -----
 app = dash.Dash(__name__, use_pages=True, suppress_callback_exceptions=True, 
@@ -20,11 +18,10 @@ import apis.bybit_signals_api as bybit_signals
 import apis.kraken_api as kraken
 import apis.lufthansa_api as lufthansa
 import apis.youtube_api as youtube
-import apis.youtube_api_mcp as youtube_mcp
 
 # ----- 3. FASTAPI WRAPPER -----
 #server = FastAPI(title="Dash Main App")
-server = FastAPI(title="Dash Main App", lifespan=lambda app: youtube_mcp.mcp.session_manager.run())
+server = FastAPI(title="Dash Main App", lifespan=lambda app: youtube.mcp.session_manager.run())
 
 # ----- 3.1 HEALTH ENDPOINT -----
 @server.get("/health")
@@ -32,8 +29,8 @@ def health():
     return {"status": "ok"}
 
 # ----- 3.2. API ROUTERS -----
-#server.mount("/youtube_mcp", youtube_mcp.mcp.sse_app())
-server.mount("/youtube_mcp", youtube_mcp.mcp.streamable_http_app())
+#server.mount("/youtube", youtube.mcp.sse_app())
+server.mount("/youtube", youtube.mcp.streamable_http_app())
 
 server.include_router(bybit.router,         prefix="/api/bybit",         tags=["Bybit"])
 server.include_router(bybit_signals.router, prefix="/api/bybit_signals", tags=["Bybit Signals"])
@@ -42,7 +39,6 @@ server.include_router(databricks.router,    prefix="/api/dbricks",       tags=["
 server.include_router(air_dataset.router,   prefix="/api/airdata",       tags=["Air Data"])
 server.include_router(lufthansa.router,     prefix="/api/lufthansa",     tags=["Lufthansa"])
 server.include_router(youtube.router,       prefix="/api/youtube",       tags=["Youtube"])
-server.include_router(youtube_mcp.router,   prefix="/api/youtube_mcp",   tags=["Youtube MCP"])
 
 # ----- 4. Mount Dash to FastAPI -----
 server.mount("/", WSGIMiddleware(app.server))
