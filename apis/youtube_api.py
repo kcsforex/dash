@@ -14,7 +14,6 @@ api_key = "AIzaSyBzSaapBAb9sfTih5iHefzDeYOtKB8_G7s"
 # --- MCP Tool (called by AI / N8N) ---
 @mcp.tool(name="get_youtube_metrics")
 async def get_channel_stats_mcp(handle: str):
-    """Get YouTube channel statistics and recent video data."""
     return await fetch_youtube_data(handle)
 
 # --- REST Endpoint (called by Dash / browser) ---
@@ -35,16 +34,11 @@ async def fetch_youtube_data(handle: str):
     channel_item = ch_response["items"][0]
     channel_id = channel_item["id"]
 
-    search_request = youtube.search().list(
-        part="id,snippet", channelId=channel_id,
-        maxResults=5, order="date", type="video"
-    )
+    search_request = youtube.search().list(part="id,snippet", channelId=channel_id, maxResults=5, order="date", type="video")
     search_response = search_request.execute()
     video_ids = [item["id"]["videoId"] for item in search_response.get("items", [])]
 
-    stats_request = youtube.videos().list(
-        part="snippet,contentDetails,statistics", id=",".join(video_ids)
-    )
+    stats_request = youtube.videos().list(part="snippet,contentDetails,statistics", id=",".join(video_ids))
     stats_response = stats_request.execute()
 
     results = {
@@ -61,16 +55,11 @@ async def fetch_youtube_data(handle: str):
 
         comments = []
         try:
-            comment_request = youtube.commentThreads().list(
-                part="snippet", videoId=video_id, maxResults=5, textFormat="plainText"
-            )
+            comment_request = youtube.commentThreads().list(part="snippet", videoId=video_id, maxResults=5, textFormat="plainText")
             comment_response = comment_request.execute()
             for c_item in comment_response.get("items", []):
                 c_snippet = c_item["snippet"]["topLevelComment"]["snippet"]
-                comments.append({
-                    "author": c_snippet["authorDisplayName"],
-                    "text": c_snippet["textDisplay"]
-                })
+                comments.append({ "author": c_snippet["authorDisplayName"], "text": c_snippet["textDisplay"]})
         except Exception:
             comments = [{"author": "System", "text": "Comments disabled"}]
 
