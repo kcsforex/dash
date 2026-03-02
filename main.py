@@ -24,7 +24,7 @@ import apis.youtube_api_mcp as youtube_mcp
 
 # ----- 3. FASTAPI WRAPPER -----
 #server = FastAPI(title="Dash Main App")
-server = FastAPI(title="Dash Main App", lifespan=lambda app: youtube_mcp.mcp.session_manager.run() # Required for Streamable HTTP)
+server = FastAPI(title="Dash Main App", lifespan=lambda app: youtube_mcp.mcp.session_manager.run()) # Required for Streamable HTTP
 
 # ----- 3.1 HEALTH ENDPOINT -----
 @server.get("/health")
