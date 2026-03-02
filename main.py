@@ -1,4 +1,5 @@
 # 2026.03.02  16.00
+# https://heeki.medium.com/building-an-mcp-server-as-an-api-developer-cfc162d06a83
 import dash
 from dash import html, dcc
 import dash_bootstrap_components as dbc
@@ -34,9 +35,11 @@ def health():
 # This creates the /sse and /messages endpoints n8n needs
 #app.mount("/mcp", mcp.sse_app())
 
-mcp = FastMCP("strava", stateless_http=True)
-app = FastAPI(title="Strava",lifespan=lambda app: mcp.session_manager.run())
-app.mount("/strava", mcp.streamable_http_app())
+server.mount("/youtube_mcp", youtube_mcp.mcp.sse_app())
+
+#mcp = FastMCP("strava", stateless_http=True)
+#app = FastAPI(title="Strava",lifespan=lambda app: mcp.session_manager.run())
+#app.mount("/strava", mcp.streamable_http_app())
 
 
 #youtube_mcp_asgi = youtube_mcp.mcp.streamable_http_app()
