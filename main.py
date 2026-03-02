@@ -4,8 +4,8 @@ from dash import html, dcc
 import dash_bootstrap_components as dbc
 from fastapi import FastAPI
 from fastapi.middleware.wsgi import WSGIMiddleware
-#from mcp.server.fastmcp import FastMCP
-from fastmcp import FastMCP
+from mcp.server.fastmcp import FastMCP
+#from fastmcp import FastMCP
 
 # ----- 1. Initalize Dash -----
 app = dash.Dash(__name__, use_pages=True, suppress_callback_exceptions=True, 
