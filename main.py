@@ -4,7 +4,8 @@ from dash import html, dcc
 import dash_bootstrap_components as dbc
 from fastapi import FastAPI
 from fastapi.middleware.wsgi import WSGIMiddleware
-from mcp.server.fastmcp import FastMCP
+#from mcp.server.fastmcp import FastMCP
+from fastmcp import FastMCP
 
 # ----- 1. Initalize Dash -----
 app = dash.Dash(__name__, use_pages=True, suppress_callback_exceptions=True, 
@@ -32,8 +33,10 @@ def health():
 # This creates the /sse and /messages endpoints n8n needs
 #app.mount("/mcp", mcp.sse_app())
 #server.mount("/youtube_mcp", youtube_mcp.mcp.streamable_http_app())
-youtube_mcp_asgi = youtube_mcp.mcp.streamable_http_app()
-server.mount("/youtube_mcp", youtube_mcp_asgi)
+#youtube_mcp_asgi = youtube_mcp.mcp.streamable_http_app()
+#server.mount("/youtube_mcp", youtube_mcp_asgi)
+
+youtube_mcp.mcp.mount(server, path="/youtube_mcp/mcp")
 
 server.include_router(bybit.router,         prefix="/api/bybit",         tags=["Bybit"])
 server.include_router(bybit_signals.router, prefix="/api/bybit_signals", tags=["Bybit Signals"])
