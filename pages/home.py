@@ -16,7 +16,7 @@ CARD_STYLE = {
 
 TABLE_STYLE = { "backgroundColor": "transparent", "--bs-table-bg": "transparent", "--bs-table-accent-bg": "transparent", "color": "white",}
 
-PACKAGES = ["fastapi", "psycopg", "dash", "pyarrow", "ccxt", "pandas", "numpy", "SQLAlchemy", "scikit-learn", "databricks-sql-connector"]
+PACKAGES = ["fastapi", "fastmcp", "pandas", "pyarrow", "dash", "ccxt", "scikit-learn", "SQLAlchemy", "databricks-sql-connector", "psycopg"]
 
 def get_runtime_info():
     info_header = [("Python Version", sys.version.split()[0]), ("OS Platform", platform.platform()[:11])]
