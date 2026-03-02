@@ -32,7 +32,6 @@ def health():
 #server.mount("/youtube", youtube.mcp.streamable_http_app())
 #server.mount("/youtube", youtube.mcp.streamable_http_app())
 server.mount("/youtube", youtube.mcp.http_app(stateless_http=True))
-server.mount("/youtube", youtube.mcp.http_app(stateless_http=True))
 
 server.include_router(bybit.router,         prefix="/api/bybit",         tags=["Bybit"])
 server.include_router(kraken.router,        prefix="/api/kraken",        tags=["Kraken"])
