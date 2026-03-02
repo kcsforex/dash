@@ -14,7 +14,6 @@ app = dash.Dash(__name__, use_pages=True, suppress_callback_exceptions=True,
 # ----- 2. NOW IMPORT YOUR PAGES -----
 from pages import home, bybit,  databricks, air_dataset, lufthansa
 import apis.bybit_api as bybit
-import apis.bybit_signals_api as bybit_signals
 import apis.kraken_api as kraken
 import apis.lufthansa_api as lufthansa
 import apis.youtube_api as youtube
@@ -33,7 +32,6 @@ def health():
 server.mount("/youtube", youtube.mcp.streamable_http_app())
 
 server.include_router(bybit.router,         prefix="/api/bybit",         tags=["Bybit"])
-server.include_router(bybit_signals.router, prefix="/api/bybit_signals", tags=["Bybit Signals"])
 server.include_router(kraken.router,        prefix="/api/kraken",        tags=["Kraken"])
 server.include_router(databricks.router,    prefix="/api/dbricks",       tags=["Machine Learning"])
 server.include_router(air_dataset.router,   prefix="/api/airdata",       tags=["Air Data"])
