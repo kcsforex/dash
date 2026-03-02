@@ -24,7 +24,7 @@ import apis.youtube_api_mcp as youtube_mcp
 
 # ----- 3. FASTAPI WRAPPER -----
 #server = FastAPI(title="Dash Main App")
-server = FastAPI(title="Dash Main App", lifespan=lambda app: youtube_mcp.mcp.session_manager.run()) # Required for Streamable HTTP
+server = FastAPI(title="Dash Main App", lifespan=lambda app: youtube_mcp.mcp.session_manager.run())
 
 # ----- 3.1 HEALTH ENDPOINT -----
 @server.get("/health")
@@ -32,24 +32,8 @@ def health():
     return {"status": "ok"}
 
 # ----- 3.2. API ROUTERS -----
-# 4. Mount the MCP SSE logic onto FastAPI
-# This creates the /sse and /messages endpoints n8n needs
-#app.mount("/mcp", mcp.sse_app())
-
 #server.mount("/youtube_mcp", youtube_mcp.mcp.sse_app())
-server.mount("/youtube_mcp", mcp.streamable_http_app())
-
-#mcp = FastMCP("strava", stateless_http=True)
-#app = FastAPI(title="Strava",lifespan=lambda app: mcp.session_manager.run())
-#app.mount("/strava", mcp.streamable_http_app())
-
-
-#youtube_mcp_asgi = youtube_mcp.mcp.streamable_http_app()
-#server.mount("/youtube_mcp", youtube_mcp_asgi)
-
-#youtube_mcp_asgi = youtube_mcp.mcp.streamable_http_app()
-#server.mount("/youtube_mcp", youtube_mcp_asgi)
-#youtube_mcp.mcp.mount(server, path="/youtube_mcp/mcp")
+server.mount("/youtube_mcp", youtube_mcp.mcp.streamable_http_app())
 
 server.include_router(bybit.router,         prefix="/api/bybit",         tags=["Bybit"])
 server.include_router(bybit_signals.router, prefix="/api/bybit_signals", tags=["Bybit Signals"])
