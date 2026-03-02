@@ -10,16 +10,9 @@ router = APIRouter()
 #mcp = FastMCP("YouTube Analytics")
 
 # Initialize FastMCP with custom security settings
-mcp = FastMCP("YouTube Analytics",
-    transport_security=TransportSecuritySettings(
-        # Option A: Disable protection (Safe if your VPS firewall is active)
-        enable_dns_rebinding_protection=False 
-        
-        # Option B: Or explicitly allow your domain (More secure)
-        # allowed_hosts=["dash.petrosofteu.cloud", "localhost", "127.0.0.1"]
-    )
-)
-
+mcp = FastMCP("YouTube Analytics", transport_security=TransportSecuritySettings(enable_dns_rebinding_protection=False))  
+# allowed_hosts=["dash.petrosofteu.cloud", "localhost", "127.0.0.1"]
+    
 # Define your API key
 api_key = 'AIzaSyBzSaapBAb9sfTih5iHefzDeYOtKB8_G7s'
 
