@@ -16,3 +16,4 @@ crawl4ai
 bs4
 google-api-python-client
 isodate
+fastmcp
