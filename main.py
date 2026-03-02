@@ -30,8 +30,8 @@ def health():
 # ----- 3.2. API ROUTERS -----
 #server.mount("/youtube", youtube.mcp.sse_app())
 #server.mount("/youtube", youtube.mcp.streamable_http_app())
-#server.mount("/youtube", youtube.mcp.streamable_http_app())
-server.mount("/youtube", youtube.mcp.http_app(stateless_http=True))
+server.mount("/youtube", youtube.mcp.streamable_http_app(stateless_http=True))
+#server.mount("/youtube", youtube.mcp.http_app(stateless_http=True))
 
 server.include_router(bybit.router,         prefix="/api/bybit",         tags=["Bybit"])
 server.include_router(kraken.router,        prefix="/api/kraken",        tags=["Kraken"])
@@ -41,8 +41,7 @@ server.include_router(lufthansa.router,     prefix="/api/lufthansa",     tags=["
 server.include_router(youtube.router,       prefix="/api/youtube",       tags=["Youtube"])
 
 # ----- 4. Mount Dash to FastAPI -----
-#server.mount("/", WSGIMiddleware(app.server))
-server.mount("/app", WSGIMiddleware(app.server))
+server.mount("/", WSGIMiddleware(app.server))
 
 # ----- 5. SIDEBAR & LAYOUT  (Your Modern Layout) -----
 SIDEBAR_STYLE = {
