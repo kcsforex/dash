@@ -41,7 +41,8 @@ server.include_router(lufthansa.router,     prefix="/api/lufthansa",     tags=["
 server.include_router(youtube.router,       prefix="/api/youtube",       tags=["Youtube"])
 
 # ----- 4. Mount Dash to FastAPI -----
-server.mount("/", WSGIMiddleware(app.server))
+#server.mount("/", WSGIMiddleware(app.server))
+server.mount("/app", WSGIMiddleware(app.server))
 
 # ----- 5. SIDEBAR & LAYOUT  (Your Modern Layout) -----
 SIDEBAR_STYLE = {
