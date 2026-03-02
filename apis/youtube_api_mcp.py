@@ -3,7 +3,6 @@ from fastapi import FastAPI, APIRouter
 from mcp.server.fastmcp import FastMCP
 from googleapiclient.discovery import build
 import isodate
-import uvicorn
 
 # 1. Initialize APIRouter/FastMCP
 router = APIRouter() 
