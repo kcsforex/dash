@@ -4,8 +4,9 @@ from dash import html, dcc
 import dash_bootstrap_components as dbc
 from fastapi import FastAPI
 from fastapi.middleware.wsgi import WSGIMiddleware
-from mcp.server.fastmcp import FastMCP
-#from fastmcp import FastMCP
+#from mcp.server.fastmcp import FastMCP
+from fastmcp import FastMCP
+from contextlib import asynccontextmanager
 
 # ----- 1. Initalize Dash -----
 app = dash.Dash(__name__, use_pages=True, suppress_callback_exceptions=True, 
@@ -36,7 +37,15 @@ def health():
 #youtube_mcp_asgi = youtube_mcp.mcp.streamable_http_app()
 #server.mount("/youtube_mcp", youtube_mcp_asgi)
 
-youtube_mcp.mcp.mount(server, path="/youtube_mcp/mcp")
+youtube_mcp_app = youtube_mcp.mcp.http_app(path="/")
+@asynccontextmanager
+async def lifespan(app):
+    async with youtube_mcp_app.lifespan(app):
+        yield
+
+server = FastAPI(title="Dash Main App", lifespan=lifespan)
+server.mount("/youtube_mcp", youtube_mcp_app)
+#youtube_mcp.mcp.mount(server, path="/youtube_mcp/mcp")
 
 server.include_router(bybit.router,         prefix="/api/bybit",         tags=["Bybit"])
 server.include_router(bybit_signals.router, prefix="/api/bybit_signals", tags=["Bybit Signals"])
