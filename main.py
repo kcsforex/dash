@@ -31,7 +31,7 @@ def health():
 # 4. Mount the MCP SSE logic onto FastAPI
 # This creates the /sse and /messages endpoints n8n needs
 #app.mount("/mcp", mcp.sse_app())
-server.mount("/mcp", youtube_mcp.mcp.http_app())
+server.mount("/youtube_mcp", youtube_mcp.mcp.http_app())
 
 server.include_router(bybit.router,         prefix="/api/bybit",         tags=["Bybit"])
 server.include_router(bybit_signals.router, prefix="/api/bybit_signals", tags=["Bybit Signals"])
