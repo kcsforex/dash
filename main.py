@@ -86,7 +86,7 @@ sidebar = html.Div([
 
 app.layout = html.Div([
     sidebar,
-    html.Div(dash_container := dash.page_container, style={
+    html.Div(ash.page_container, style={
         "marginLeft": "250px", "padding": "2rem",
         "background": "linear-gradient(135deg, #0f0c29, #302b63, #24243e)",
         "minHeight": "100vh"
