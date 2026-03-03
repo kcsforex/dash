@@ -16,7 +16,7 @@ api_key = "AIzaSyBzSaapBAb9sfTih5iHefzDeYOtKB8_G7s"
 
 # --- MCP Tool (called by AI / N8N) ---
 @mcp.tool(name="get_youtube_metrics")
-async def get_channel_stats_mcp(channel: str, maxVideos: int = 5, maxComments: int = 5):
+async def get_channel_stats_mcp(channel:str, maxVideos: int = 5, maxComments: int = 5):
     return await fetch_youtube_data(channel, maxVideos, maxComments)
 
 # --- REST Endpoint (called by Dash / browser) ---
