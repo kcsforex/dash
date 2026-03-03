@@ -19,14 +19,12 @@ import apis.lufthansa_api as lufthansa
 import apis.youtube_api as youtube
 
 # ----- 3. FASTAPI WRAPPER -----
-#server = FastAPI(title="Dash Main App")
+server = FastAPI(title="Dash Main App")
 #server = FastAPI(title="Dash Main App", lifespan=lambda app: youtube.mcp.session_manager.run())
 #server = FastAPI(title="Dash Main App",lifespan=youtube.lifespan)
 #server.mount("/youtube", youtube.mcp.http_app(stateless_http=True))
 
-youtube_app = youtube.mcp.http_app(stateless_http=True)
-server = FastAPI(title="Dash Main App", lifespan=youtube_app.lifespan)
-server.mount("/youtube", youtube_app)
+server.mount("/youtube", youtube.mcp.streamable_http_app())
 
 
 # ----- 3.1 HEALTH ENDPOINT -----
