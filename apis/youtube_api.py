@@ -25,9 +25,9 @@ async def get_channel_stats_api( handle: str,  maxVideos: int = 5, MaxComments: 
     return await fetch_youtube_data(handle, maxVideos, MaxComments)
 
 # --- Shared logic ---
-async def fetch_youtube_data(handle: str):
+async def fetch_youtube_data(handle: str, maxVideos: int = 5, MaxComments: int = 5):
+    
     youtube = build("youtube", "v3", developerKey=api_key)
-
     ch_request = youtube.channels().list(part="id,snippet,statistics", forHandle=handle)
     ch_response = ch_request.execute()
 
