@@ -20,7 +20,7 @@ async def get_channel_stats_mcp(channel:str, maxVideos: int = 5, maxComments: in
     return await fetch_youtube_data(channel, maxVideos, maxComments)
 
 # --- REST Endpoint (called by Dash / browser) ---
-@router.get("/metrics/{handle}")
+@router.get("/metrics/{channel}")
 async def get_channel_stats_api(channel:str,  maxVideos:int = 5, maxComments:int = 5):
     return await fetch_youtube_data(channel, maxVideos, maxComments)
 
