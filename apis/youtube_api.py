@@ -1,7 +1,7 @@
 # 2026.03.03 10:00
 from fastapi import APIRouter
-#from mcp.server.fastmcp import FastMCP
-from fastmcp import FastMCP
+from mcp.server.fastmcp import FastMCP
+#from fastmcp import FastMCP
 from mcp.server.transport_security import TransportSecuritySettings
 from googleapiclient.discovery import build
 import isodate
@@ -11,7 +11,7 @@ router = APIRouter()
 
 mcp = FastMCP("YouTube Analytics")
 #mcp = FastMCP("YouTube Analytics", stateless_http=True, transport_security=TransportSecuritySettings(enable_dns_rebinding_protection=False))
-#mcp = FastMCP("YouTube Analytics", transport_security=TransportSecuritySettings(enable_dns_rebinding_protection=False))
+mcp = FastMCP("YouTube Analytics", transport_security=TransportSecuritySettings(enable_dns_rebinding_protection=False))
 api_key = "AIzaSyBzSaapBAb9sfTih5iHefzDeYOtKB8_G7s"
 
 # --- MCP Tool (called by AI / N8N) ---
