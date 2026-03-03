@@ -16,16 +16,16 @@ api_key = "AIzaSyBzSaapBAb9sfTih5iHefzDeYOtKB8_G7s"
 
 # --- MCP Tool (called by AI / N8N) ---
 @mcp.tool(name="get_youtube_metrics")
-async def get_channel_stats_mcp(handle: str, maxVideos: int = 5, MaxComments: int = 5):
-    return await fetch_youtube_data(handle, maxVideos, MaxComments)
+async def get_channel_stats_mcp(handle: str, maxVideos: int = 5, maxComments: int = 5):
+    return await fetch_youtube_data(handle, maxVideos, maxComments)
 
 # --- REST Endpoint (called by Dash / browser) ---
 @router.get("/metrics/{handle}")
-async def get_channel_stats_api(channel:str,  maxVideos:int = 5, MaxComments:int = 5):
-    return await fetch_youtube_data(handle, maxVideos, MaxComments)
+async def get_channel_stats_api(channel:str,  maxVideos:int = 5, maxComments:int = 5):
+    return await fetch_youtube_data(handle, maxVideos, maxComments)
 
 # --- Shared logic ---
-async def fetch_youtube_data(channel:str, maxVideos:int = 5, MaxComments:int = 5):
+async def fetch_youtube_data(channel:str, maxVideos:int = 5, maxComments:int = 5):
     
     youtube = build("youtube", "v3", developerKey=api_key)
     ch_request = youtube.channels().list(part="id,snippet,statistics", forHandle=channel)
@@ -58,7 +58,7 @@ async def fetch_youtube_data(channel:str, maxVideos:int = 5, MaxComments:int = 5
 
         comments = []
         try:
-            comment_request = youtube.commentThreads().list(part="snippet", videoId=video_id, maxResults=MaxComments, textFormat="plainText")
+            comment_request = youtube.commentThreads().list(part="snippet", videoId=video_id, maxResults=maxComments, textFormat="plainText")
             comment_response = comment_request.execute()
             for c_item in comment_response.get("items", []):
                 c_snippet = c_item["snippet"]["topLevelComment"]["snippet"]
