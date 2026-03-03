@@ -1,4 +1,4 @@
-# 2026.03.03 10:00
+# 2026.03.03 18:00
 from fastapi import APIRouter
 from mcp.server.fastmcp import FastMCP
 #from fastmcp import FastMCP
@@ -16,13 +16,13 @@ api_key = "AIzaSyBzSaapBAb9sfTih5iHefzDeYOtKB8_G7s"
 
 # --- MCP Tool (called by AI / N8N) ---
 @mcp.tool(name="get_youtube_metrics")
-async def get_channel_stats_mcp(handle: str):
-    return await fetch_youtube_data(handle)
+async def get_channel_stats_mcp(handle: str, maxVids: int = 5, MaxComments: int = 5):
+    return await fetch_youtube_data(handle, maxVids, MaxComments)
 
 # --- REST Endpoint (called by Dash / browser) ---
 @router.get("/metrics/{handle}")
-async def get_channel_stats_api(handle: str):
-    return await fetch_youtube_data(handle)
+async def get_channel_stats_api( handle: str,  maxVids: int = 5, MaxComments: int = 5):
+    return await fetch_youtube_data(handle, maxVids, MaxComments)
 
 # --- Shared logic ---
 async def fetch_youtube_data(handle: str):
