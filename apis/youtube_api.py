@@ -1,7 +1,6 @@
 # 2026.03.03 18:00
 from fastapi import APIRouter
 from mcp.server.fastmcp import FastMCP
-#from fastmcp import FastMCP
 from mcp.server.transport_security import TransportSecuritySettings
 from googleapiclient.discovery import build
 import isodate
