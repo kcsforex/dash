@@ -62,7 +62,7 @@ async def fetch_youtube_data(handle: str):
             comment_response = comment_request.execute()
             for c_item in comment_response.get("items", []):
                 c_snippet = c_item["snippet"]["topLevelComment"]["snippet"]
-                comments.append({ "author": c_snippet["authorDisplayName"], "text": c_snippet["textDisplay"]})
+                comments.append({ "author": c_snippet["authorDisplayName"], "c_published": c_snippet["publishedAt"], "text": c_snippet["textDisplay"]})
         except Exception:
             comments = [{"author": "System", "text": "Comments disabled"}]
 
