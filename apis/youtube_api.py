@@ -1,4 +1,4 @@
-# 2026.03.03 18:00
+# 2026.03.04 18:00
 from fastapi import APIRouter
 from mcp.server.fastmcp import FastMCP
 from mcp.server.transport_security import TransportSecuritySettings
@@ -8,9 +8,7 @@ import isodate
 # --- Initialize APIRouter & FastMCP ---
 router = APIRouter()
 
-#mcp = FastMCP("YouTube Analytics")
 mcp = FastMCP("YouTube Analytics", stateless_http=True, transport_security=TransportSecuritySettings(enable_dns_rebinding_protection=False))
-#mcp = FastMCP("YouTube Analytics", transport_security=TransportSecuritySettings(enable_dns_rebinding_protection=False))
 api_key = "AIzaSyBzSaapBAb9sfTih5iHefzDeYOtKB8_G7s"
 
 # --- MCP Tool (called by AI / N8N) ---
@@ -43,12 +41,8 @@ async def fetch_youtube_data(channel:str, maxVideos:int = 5, maxComments:int = 5
     stats_request = youtube.videos().list(part="snippet,contentDetails,statistics", id=",".join(video_ids))
     stats_response = stats_request.execute()
 
-    results = {
-        "channel_name": channel_item["snippet"]["title"],
-        "subscribers": channel_item["statistics"].get("subscriberCount"),
-        "videos": []
-    }
-
+    results = []
+    
     for video in stats_response.get("items", []):
         video_id = video["id"]
         stats = video["statistics"]
@@ -65,13 +59,15 @@ async def fetch_youtube_data(channel:str, maxVideos:int = 5, maxComments:int = 5
         except Exception:
             comments = [{"author": "System", "text": "Comments disabled"}]
 
-        results["videos"].append({
+        results.append({
+            "channel_name": channel_item["snippet"]["title"],
+            "subscribers": int(channel_item["statistics"].get("subscriberCount", 0)),
+            "video_id": video_id,
             "title": snippet["title"][:50],
-            "id": video_id,
-            "duration_sec": isodate.parse_duration(details.get("duration")).total_seconds(),
+            "duration_sec": int(isodate.parse_duration(details.get("duration")).total_seconds()),
             "upload_date": snippet["publishedAt"],
-            "view_count": stats.get("viewCount"),
-            "comments": comments
+            "view_count": int(stats.get("viewCount", 0)),
+            "comments": comments 
         })
 
     return results
